@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<!-- saved from url=(0056)file:///C:/Users/HxTos/Downloads/cy_gate_edi_manual.html -->
+<html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HX CY · Controle de Gate</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+:root {
+  --teal:       #00ACC1;
+  --teal-dark:  #00838F;
+  --teal-btn:   #00BCD4;
+  --teal-light: #E0F7FA;
+  --teal-mid:   #B2EBF2;
+  --teal-row:   #E0F7FA;
+  --white:      #FFFFFF;
+  --bg:         #F5F6FA;
+  --card:       #FFFFFF;
+  --border:     #E0E0E0;
+  --border2:    #CFD8DC;
+  --text1:      #212121;
+  --text2:      #546E7A;
+  --text3:      #90A4AE;
+  --green:      #43A047;
+  --green-l:    #E8F5E9;
+  --green-b:    #A5D6A7;
+  --amber:      #FB8C00;
+  --amber-l:    #FFF3E0;
+  --amber-b:    #FFCC80;
+  --red:        #E53935;
+  --red-l:      #FFEBEE;
+  --red-b:      #EF9A9A;
+  --purple:     #8E24AA;
+  --purple-l:   #F3E5F5;
+  --shadow:     0 1px 4px rgba(0,0,0,.10);
+  --shadow-md:  0 2px 8px rgba(0,0,0,.12);
+  --radius:     6px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Roboto', sans-serif; background: var(--bg); color: var(--text1); font-size: 13px; min-height: 100vh; }
+
+/* ── TOPBAR ── */
+.topbar {
+  background: var(--teal);
+  height: 48px; display: flex; align-items: center; gap: 12px; padding: 0 18px;
+  position: sticky; top: 0; z-index: 200;
+  box-shadow: 0 2px 4px rgba(0,0,0,.18);
+}
+.tb-menu { color: #fff; font-size: 22px; cursor: pointer; }
+.tb-logo { color: #fff; font-size: 16px; font-weight: 700; letter-spacing: .06em; flex: 1; text-align: center; }
+.tb-icons { display: flex; gap: 10px; color: #fff; font-size: 18px; }
+.tb-icon { cursor: pointer; opacity: .85; }
+.tb-icon:hover { opacity: 1; }
+
+/* ── PAGE ── */
+.page { max-width: 1340px; margin: 0 auto; padding: 20px 20px 40px; }
+
+/* ── PAGE TITLE ── */
+.page-title { font-size: 18px; font-weight: 500; color: var(--teal); margin-bottom: 16px; }
+
+/* ── SEARCH BAR (fiel ao original) ── */
+.search-bar {
+  display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 8px;
+  margin-bottom: 8px;
+}
+.search-bar-bottom { display: grid; grid-template-columns: 1fr 200px 200px; gap: 8px; margin-bottom: 20px; align-items: center; }
+
+.field-wrap { display: flex; flex-direction: column; gap: 2px; position: relative; }
+.field-lbl { font-size: 10px; color: var(--text3); font-weight: 500; letter-spacing: .04em; }
+.field-input {
+  height: 36px; background: var(--white); border: 1px solid var(--border2);
+  border-radius: var(--radius); padding: 0 30px 0 10px;
+  font-size: 12px; color: var(--text1); font-family: 'Roboto', sans-serif;
+  outline: none; width: 100%;
+}
+.field-input:focus { border-color: var(--teal); }
+.field-input::placeholder { color: var(--text3); }
+.field-arrow {
+  position: absolute; right: 8px; bottom: 10px;
+  color: var(--text3); font-size: 12px; pointer-events: none;
+}
+.btn-limpar {
+  height: 36px; background: var(--teal-light); color: var(--teal-dark);
+  border: 1px solid var(--teal-mid); border-radius: var(--radius);
+  font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'Roboto', sans-serif;
+  transition: background .15s;
+}
+.btn-limpar:hover { background: var(--teal-mid); }
+.btn-buscar {
+  height: 36px; background: var(--teal-btn); color: #fff;
+  border: none; border-radius: var(--radius);
+  font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'Roboto', sans-serif;
+  transition: background .15s;
+}
+.btn-buscar:hover { background: var(--teal-dark); }
+
+/* ── EDI / MANUAL ENTRY BANNER — NEW ── */
+.entry-mode-bar {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 10px 16px; margin-bottom: 18px;
+  box-shadow: var(--shadow);
+}
+.entry-mode-label { font-size: 12px; color: var(--text2); font-weight: 500; margin-right: 4px; white-space: nowrap; }
+.entry-mode-sep { flex: 1; }
+.mode-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 500;
+  cursor: pointer; font-family: 'Roboto', sans-serif; border: 1.5px solid;
+  transition: all .15s;
+}
+.mode-btn.edi { background: var(--purple-l); color: var(--purple); border-color: #CE93D8; }
+.mode-btn.edi:hover, .mode-btn.edi.active { background: var(--purple); color: #fff; border-color: var(--purple); }
+.mode-btn.manual { background: var(--amber-l); color: var(--amber); border-color: var(--amber-b); }
+.mode-btn.manual:hover, .mode-btn.manual.active { background: var(--amber); color: #fff; border-color: var(--amber); }
+.mode-badge { font-size: 10px; background: rgba(255,255,255,.25); padding: 1px 6px; border-radius: 10px; }
+
+/* ── EDI PANEL — NEW ── */
+.edi-panel {
+  background: var(--white); border: 1.5px solid #CE93D8; border-radius: var(--radius);
+  box-shadow: var(--shadow-md); margin-bottom: 18px; overflow: hidden;
+  display: none;
+}
+.edi-panel.open { display: block; }
+.edi-panel-head {
+  background: var(--purple-l); border-bottom: 1px solid #CE93D8;
+  padding: 10px 16px; display: flex; align-items: center; gap: 10px;
+}
+.edi-panel-title { font-size: 13px; font-weight: 700; color: var(--purple); }
+.edi-panel-sub { font-size: 11px; color: #AB47BC; margin-left: 4px; }
+.edi-close { margin-left: auto; color: var(--purple); cursor: pointer; font-size: 16px; opacity: .7; }
+.edi-close:hover { opacity: 1; }
+.edi-body { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+
+/* EDI type tabs */
+.edi-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.edi-tab {
+  padding: 5px 14px; border-radius: 16px; font-size: 11px; font-weight: 500;
+  cursor: pointer; border: 1.5px solid var(--border2); color: var(--text2);
+  background: var(--bg); transition: all .15s; font-family: 'Roboto', sans-serif;
+}
+.edi-tab:hover { border-color: var(--purple); color: var(--purple); }
+.edi-tab.on { background: var(--purple); color: #fff; border-color: var(--purple); }
+
+/* EDI source options */
+.edi-source-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+.edi-source-card {
+  border: 1.5px solid var(--border); border-radius: var(--radius);
+  padding: 12px 14px; cursor: pointer; transition: all .15s; background: var(--bg);
+  display: flex; flex-direction: column; gap: 4px;
+}
+.edi-source-card:hover { border-color: var(--purple); background: var(--purple-l); }
+.edi-source-card.sel { border-color: var(--purple); background: var(--purple-l); box-shadow: 0 0 0 3px rgba(142,36,170,.12); }
+.edi-source-icon { font-size: 20px; }
+.edi-source-name { font-size: 12px; font-weight: 500; color: var(--text1); }
+.edi-source-sub { font-size: 10px; color: var(--text3); }
+
+/* EDI config row */
+.edi-config { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; align-items: end; }
+.edi-config-full { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: end; }
+.edi-input {
+  height: 36px; background: var(--white); border: 1px solid var(--border2);
+  border-radius: var(--radius); padding: 0 10px; font-size: 12px;
+  color: var(--text1); font-family: 'Roboto', sans-serif; outline: none; width: 100%;
+}
+.edi-input:focus { border-color: var(--purple); }
+.edi-textarea {
+  width: 100%; background: var(--white); border: 1px solid var(--border2);
+  border-radius: var(--radius); padding: 8px 10px; font-size: 11px;
+  color: var(--text1); font-family: 'Roboto Mono', monospace; outline: none;
+  resize: vertical; min-height: 90px;
+}
+.edi-textarea:focus { border-color: var(--purple); }
+.edi-field-lbl { font-size: 10px; color: var(--text3); font-weight: 500; letter-spacing: .04em; margin-bottom: 3px; }
+
+.btn-edi-action {
+  height: 36px; padding: 0 18px; border: none; border-radius: var(--radius);
+  background: var(--purple); color: #fff; font-size: 12px; font-weight: 500;
+  cursor: pointer; font-family: 'Roboto', sans-serif; white-space: nowrap;
+  transition: background .15s;
+}
+.btn-edi-action:hover { background: #6A1B9A; }
+
+/* EDI result preview */
+.edi-result {
+  background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 10px 14px; display: none;
+}
+.edi-result.show { display: block; }
+.edi-result-title { font-size: 11px; font-weight: 700; color: var(--text2); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.edi-result-row { display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 11px; }
+.edi-result-row:last-child { border: none; }
+.edi-result-id { font-weight: 700; color: var(--teal); min-width: 100px; font-family: 'Roboto Mono', monospace; }
+.edi-result-type { color: var(--text2); min-width: 60px; }
+.edi-result-flag { font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 500; }
+.f-codeco { background: var(--purple-l); color: var(--purple); }
+.f-coprar { background: var(--teal-light); color: var(--teal-dark); }
+.f-baplie { background: var(--amber-l); color: var(--amber); }
+.edi-apply-bar { display: flex; justify-content: flex-end; gap: 8px; margin-top: 10px; }
+.btn-edi-apply {
+  padding: 7px 18px; border: none; border-radius: var(--radius);
+  background: var(--teal-btn); color: #fff; font-size: 12px; font-weight: 500;
+  cursor: pointer; font-family: 'Roboto', sans-serif; transition: background .15s;
+}
+.btn-edi-apply:hover { background: var(--teal-dark); }
+.btn-edi-cancel {
+  padding: 7px 18px; background: transparent; color: var(--text2);
+  border: 1px solid var(--border2); border-radius: var(--radius);
+  font-size: 12px; cursor: pointer; font-family: 'Roboto', sans-serif;
+}
+
+/* ── MANUAL ENTRY PANEL — NEW ── */
+.manual-panel {
+  background: var(--white); border: 1.5px solid var(--amber-b); border-radius: var(--radius);
+  box-shadow: var(--shadow-md); margin-bottom: 18px; overflow: hidden;
+  display: none;
+}
+.manual-panel.open { display: block; }
+.manual-panel-head {
+  background: var(--amber-l); border-bottom: 1px solid var(--amber-b);
+  padding: 10px 16px; display: flex; align-items: center; gap: 10px;
+}
+.manual-panel-title { font-size: 13px; font-weight: 700; color: #E65100; }
+.manual-panel-sub { font-size: 11px; color: #FB8C00; }
+.manual-close { margin-left: auto; color: var(--amber); cursor: pointer; font-size: 16px; opacity: .7; }
+.manual-close:hover { opacity: 1; }
+.manual-body { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+
+/* Manual form sections */
+.form-section-title {
+  font-size: 11px; font-weight: 700; color: var(--teal-dark);
+  text-transform: uppercase; letter-spacing: .05em;
+  padding-bottom: 6px; border-bottom: 1px solid var(--border);
+}
+.form-grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
+.form-grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+.form-grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
+.form-field { display: flex; flex-direction: column; gap: 3px; }
+.form-lbl { font-size: 10px; color: var(--text3); font-weight: 500; letter-spacing: .04em; }
+.form-lbl span { color: var(--red); margin-left: 2px; }
+.form-input {
+  height: 36px; background: var(--white); border: 1px solid var(--border2);
+  border-radius: var(--radius); padding: 0 10px;
+  font-size: 12px; color: var(--text1); font-family: 'Roboto', sans-serif; outline: none;
+}
+.form-input:focus { border-color: var(--teal); }
+.form-input::placeholder { color: var(--text3); }
+.form-select {
+  height: 36px; background: var(--white); border: 1px solid var(--border2);
+  border-radius: var(--radius); padding: 0 10px;
+  font-size: 12px; color: var(--text1); font-family: 'Roboto', sans-serif;
+  outline: none; cursor: pointer; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2390A4AE' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+  padding-right: 28px;
+}
+.form-select:focus { border-color: var(--teal); }
+
+/* Container rows in manual form */
+.cntr-list { display: flex; flex-direction: column; gap: 8px; }
+.cntr-row-form {
+  background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 10px 12px; display: grid; grid-template-columns: 130px 90px 90px 100px 110px 80px 36px; gap: 8px; align-items: end;
+}
+.cntr-row-form.dg { border-color: var(--amber-b); background: var(--amber-l); }
+.cntr-row-form.reefer { border-color: #80DEEA; background: #E0F7FA; }
+.btn-add-cntr {
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border: 1.5px dashed var(--teal); border-radius: var(--radius);
+  color: var(--teal); font-size: 12px; font-weight: 500; cursor: pointer;
+  background: transparent; font-family: 'Roboto', sans-serif; width: fit-content;
+  transition: background .15s;
+}
+.btn-add-cntr:hover { background: var(--teal-light); }
+.btn-remove {
+  width: 36px; height: 36px; border: 1px solid var(--red-b); border-radius: var(--radius);
+  background: var(--red-l); color: var(--red); cursor: pointer; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+}
+.btn-remove:hover { background: var(--red); color: #fff; }
+
+/* DG / Reefer toggles */
+.special-toggles { display: flex; gap: 8px; flex-wrap: wrap; }
+.stoggle {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; cursor: pointer; padding: 4px 10px;
+  border-radius: 14px; border: 1px solid var(--border2); color: var(--text2);
+  transition: all .15s; user-select: none;
+}
+.stoggle input { display: none; }
+.stoggle.dg-t:has(input:checked) { background: var(--amber-l); color: var(--amber); border-color: var(--amber-b); }
+.stoggle.reefer-t:has(input:checked) { background: #E0F7FA; color: var(--teal-dark); border-color: #80DEEA; }
+
+/* Manual footer */
+.manual-footer { display: flex; justify-content: flex-end; gap: 8px; padding-top: 6px; border-top: 1px solid var(--border); }
+.btn-save-manual {
+  padding: 8px 22px; background: var(--teal-btn); color: #fff; border: none;
+  border-radius: var(--radius); font-size: 13px; font-weight: 500; cursor: pointer;
+  font-family: 'Roboto', sans-serif; transition: background .15s;
+}
+.btn-save-manual:hover { background: var(--teal-dark); }
+.btn-cancel-manual {
+  padding: 8px 18px; background: transparent; color: var(--text2);
+  border: 1px solid var(--border2); border-radius: var(--radius);
+  font-size: 13px; cursor: pointer; font-family: 'Roboto', sans-serif;
+}
+
+/* ── SECTION TITLE ── */
+.section-title {
+  font-size: 15px; font-weight: 500; color: var(--teal);
+  margin-bottom: 12px;
+}
+
+/* ── CARD GRID ── */
+.card-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.card-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+
+/* ── CARD ── */
+.card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+}
+.card-head {
+  background: var(--teal-light); border-bottom: 1px solid var(--teal-mid);
+  padding: 8px 14px; font-size: 13px; font-weight: 500; color: var(--text1);
+}
+.card-body { padding: 14px; }
+
+/* Ticket card (wide, teal header) */
+.ticket-card-head {
+  background: #B2EBF2; padding: 8px 14px;
+  font-size: 13px; font-weight: 700; color: var(--text1);
+  border-bottom: 1px solid var(--teal-mid);
+}
+
+/* Field pairs inside cards */
+.kv-grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px 14px; }
+.kv-grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px 14px; }
+.kv { display: flex; flex-direction: column; gap: 2px; }
+.kv-l { font-size: 10px; color: var(--text3); display: flex; align-items: center; gap: 4px; }
+.kv-v { font-size: 13px; font-weight: 500; color: var(--text1); display: flex; align-items: center; gap: 5px; }
+.kv-v.teal { color: var(--teal); }
+.kv-v.green { color: var(--green); }
+.kv-v.amber { color: var(--amber); }
+
+/* Arrow badge */
+.arrow-in { display: inline-flex; align-items: center; gap: 4px; color: var(--teal); font-weight: 700; }
+.arrow-out { display: inline-flex; align-items: center; gap: 4px; color: var(--amber); font-weight: 700; }
+
+/* ── TABLE ── */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+thead tr { background: var(--teal-light); }
+th {
+  padding: 8px 10px; text-align: left; font-size: 11px; font-weight: 700;
+  color: var(--teal-dark); border-bottom: 1px solid var(--teal-mid);
+  white-space: nowrap;
+}
+th .sort { color: var(--text3); font-size: 10px; margin-left: 2px; }
+td { padding: 8px 10px; font-size: 12px; color: var(--text1); border-bottom: 1px solid var(--border); }
+tr:last-child td { border: none; }
+tr:hover td { background: #FAFAFA; }
+
+/* Status chips */
+.chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 12px; font-size: 11px; font-weight: 500;
+}
+.chip-cheio { background: var(--teal-light); color: var(--teal-dark); border: 1px solid var(--teal-mid); }
+.chip-vazio { background: var(--bg); color: var(--text2); border: 1px solid var(--border2); }
+.chip-ok { background: var(--green-l); color: var(--green); border: 1px solid var(--green-b); }
+.chip-warn { background: var(--amber-l); color: var(--amber); border: 1px solid var(--amber-b); }
+.chip-edi { background: var(--purple-l); color: var(--purple); border: 1px solid #CE93D8; }
+.chip-manual { background: var(--amber-l); color: var(--amber); border: 1px solid var(--amber-b); }
+
+/* Origin badge on table */
+.origin-badge {
+  font-size: 9px; padding: 1px 6px; border-radius: 8px; font-weight: 500; margin-left: 4px;
+}
+.ob-edi { background: var(--purple-l); color: var(--purple); }
+.ob-manual { background: var(--amber-l); color: var(--amber); }
+.ob-preadvise { background: var(--green-l); color: var(--green); }
+
+.btn-view {
+  width: 30px; height: 30px; border-radius: var(--radius); border: none;
+  background: var(--teal-btn); color: #fff; cursor: pointer; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s;
+}
+.btn-view:hover { background: var(--teal-dark); }
+
+/* Pagination */
+.pagination { display: flex; align-items: center; justify-content: flex-end; gap: 6px; padding: 8px 0 2px; font-size: 12px; color: var(--text2); }
+.pg-select { height: 28px; padding: 0 6px; border: 1px solid var(--border2); border-radius: 4px; font-size: 12px; font-family: 'Roboto', sans-serif; }
+.pg-btn { width: 26px; height: 26px; border: 1px solid var(--border2); border-radius: 4px; background: var(--white); cursor: pointer; color: var(--text2); font-size: 12px; }
+.pg-btn:hover { border-color: var(--teal); color: var(--teal); }
+.pg-btn:disabled { opacity: .35; cursor: default; }
+
+/* Smart Decking section */
+.smart-head { background: var(--teal-light); padding: 10px 14px; border-radius: var(--radius) var(--radius) 0 0; border: 1px solid var(--teal-mid); border-bottom: none; font-size: 13px; font-weight: 500; color: var(--text1); }
+.smart-body { background: var(--white); border: 1px solid var(--border); border-radius: 0 0 var(--radius) var(--radius); padding: 24px; text-align: center; color: var(--text3); font-size: 13px; margin-bottom: 20px; }
+
+/* Toast notification */
+.toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 999;
+  background: var(--text1); color: #fff; padding: 10px 18px; border-radius: var(--radius);
+  font-size: 13px; box-shadow: var(--shadow-md); display: none; align-items: center; gap: 8px;
+  animation: fadeup .3s ease;
+}
+.toast.show { display: flex; }
+.toast.success { background: var(--green); }
+.toast.warning { background: var(--amber); }
+@keyframes fadeup { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+/* EDI status log */
+.edi-log { background: #1A1A2E; border-radius: var(--radius); padding: 10px 12px; font-family: 'Roboto Mono', monospace; font-size: 10px; color: #90EE90; max-height: 80px; overflow-y: auto; }
+.edi-log-line { margin-bottom: 3px; }
+.edi-log-line.err { color: #FF6B6B; }
+.edi-log-line.warn { color: #FFD93D; }
+.edi-log-line.info { color: #74B9FF; }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <span class="tb-menu">☰</span>
+  <div class="tb-logo">H𝗑 CY</div>
+  <div class="tb-icons">
+    <span class="tb-icon">⛶</span>
+    <span class="tb-icon">⊞</span>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- PAGE TITLE -->
+  <div class="page-title">Controle de Gate</div>
+
+  <!-- SEARCH BAR — fiel ao original -->
+  <div class="search-bar">
+    <div class="field-wrap">
+      <div class="field-lbl">Ticket</div>
+      <input class="field-input" placeholder="Select..." value="GT-2026-01161">
+      <span class="field-arrow">▾</span>
+    </div>
+    <div class="field-wrap">
+      <div class="field-lbl">Placa do Veículo</div>
+      <input class="field-input" placeholder="Select...">
+      <span class="field-arrow">▾</span>
+    </div>
+    <div class="field-wrap">
+      <div class="field-lbl">Motorista</div>
+      <input class="field-input" placeholder="Select...">
+      <span class="field-arrow">▾</span>
+    </div>
+    <div class="field-wrap">
+      <div class="field-lbl">Contêiner</div>
+      <input class="field-input" placeholder="Select..." value="TCKU3456781">
+      <span class="field-arrow">▾</span>
+    </div>
+  </div>
+  <div class="search-bar-bottom">
+    <div></div>
+    <button class="btn-limpar">Limpar</button>
+    <button class="btn-buscar">Buscar</button>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       NOVA BARRA DE MODO DE ENTRADA — NEW
+  ════════════════════════════════════════ -->
+  <div class="entry-mode-bar">
+    <span class="entry-mode-label">Adicionar contêineres via:</span>
+    <button class="mode-btn edi" id="btn-edi-mode" onclick="togglePanel(&#39;edi&#39;)">
+      <span>⚡</span> Integração EDI
+      <span class="mode-badge">CODECO · COPRAR · BAPLIE</span>
+    </button>
+    <button class="mode-btn manual" id="btn-manual-mode" onclick="togglePanel(&#39;manual&#39;)">
+      <span>✏️</span> Cadastro Manual
+    </button>
+    <div class="entry-mode-sep"></div>
+    <span style="font-size:11px;color:var(--text3)">Ticket GT-2026-01161 · GATE IN · 01/06/2026 11:46</span>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       PAINEL EDI — NEW
+  ════════════════════════════════════════ -->
+  <div class="edi-panel" id="edi-panel">
+    <div class="edi-panel-head">
+      <span style="font-size:18px">⚡</span>
+      <div>
+        <div class="edi-panel-title">Integração EDI</div>
+        <div class="edi-panel-sub">Importe contêineres automaticamente via mensagem EDI</div>
+      </div>
+      <span class="edi-close" onclick="closePanel(&#39;edi&#39;)">✕</span>
+    </div>
+    <div class="edi-body">
+
+      <!-- Tipo de mensagem -->
+      <div>
+        <div class="edi-field-lbl">TIPO DE MENSAGEM EDI</div>
+        <div class="edi-tabs">
+          <button class="edi-tab" onclick="setEdiTab(this,&#39;codeco&#39;)">CODECO</button>
+          <button class="edi-tab" onclick="setEdiTab(this,&#39;coprar&#39;)">COPRAR</button>
+          <button class="edi-tab" onclick="setEdiTab(this,&#39;baplie&#39;)">BAPLIE</button>
+          <button class="edi-tab on" onclick="setEdiTab(this,&#39;edifact&#39;)">UN/EDIFACT</button>
+          <button class="edi-tab" onclick="setEdiTab(this,&#39;csv&#39;)">CSV / Excel</button>
+          <button class="edi-tab" onclick="setEdiTab(this,&#39;json&#39;)">JSON / API</button>
+        </div>
+      </div>
+
+      <!-- Origem do EDI -->
+      <div>
+        <div class="edi-field-lbl">ORIGEM / CANAL DE RECEBIMENTO</div>
+        <div class="edi-source-grid">
+          <div class="edi-source-card sel" onclick="selSource(this)">
+            <div class="edi-source-icon">📁</div>
+            <div class="edi-source-name">Upload de arquivo</div>
+            <div class="edi-source-sub">Arquivo .edi / .txt / .csv</div>
+          </div>
+          <div class="edi-source-card" onclick="selSource(this)">
+            <div class="edi-source-icon">🔌</div>
+            <div class="edi-source-name">Conexão SFTP / AS2</div>
+            <div class="edi-source-sub">Integração com armador / agente</div>
+          </div>
+          <div class="edi-source-card" onclick="selSource(this)">
+            <div class="edi-source-icon">⚙️</div>
+            <div class="edi-source-name">API REST / Webhook</div>
+            <div class="edi-source-sub">Integração em tempo real</div>
+          </div>
+          <div class="edi-source-card" onclick="selSource(this)">
+            <div class="edi-source-icon">✉️</div>
+            <div class="edi-source-name">E-mail (MIME/SMTP)</div>
+            <div class="edi-source-sub">Leitura automática de caixa postal</div>
+          </div>
+          <div class="edi-source-card" onclick="selSource(this)">
+            <div class="edi-source-icon">📋</div>
+            <div class="edi-source-name">Colar texto EDI</div>
+            <div class="edi-source-sub">Cole o conteúdo bruto</div>
+          </div>
+          <div class="edi-source-card" onclick="selSource(this)">
+            <div class="edi-source-icon">🔁</div>
+            <div class="edi-source-name">Reprocessar EDI</div>
+            <div class="edi-source-sub">Reenvio de mensagem existente</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Config do upload / paste -->
+      <div>
+        <div class="edi-field-lbl">CONTEÚDO DO ARQUIVO / MENSAGEM</div>
+        <textarea class="edi-textarea" placeholder="Cole aqui o conteúdo EDI (CODECO, COPRAR, BAPLIE, UN/EDIFACT) ou arraste um arquivo...
+
+Exemplo CODECO:
+UNB+UNOA:1+SENDER:1+RECEIVER:1+210601:1146+1&#39;
+TSR+3+1&#39;
+EQD+CN+TCKU3456781+22G1:::5+2+5+5&#39;
+NAD+CA+BDA::160&#39;
+..."></textarea>
+        <div style="display:flex;gap:8px;margin-top:6px;align-items:center">
+          <label style="display:flex;align-items:center;gap:6px;padding:6px 12px;border:1.5px dashed #CE93D8;border-radius:var(--radius);cursor:pointer;color:var(--purple);font-size:12px;background:var(--purple-l)">
+            📎 Selecionar arquivo
+            <input type="file" style="display:none" accept=".edi,.txt,.csv,.json">
+          </label>
+          <div class="edi-config" style="flex:1">
+            <div>
+              <div class="edi-field-lbl">ARMADOR / PARCEIRO</div>
+              <select class="edi-input" style="height:34px">
+                <option>Selecionar...</option>
+                <option>MSK - Maersk</option>
+                <option>BDA - Armador</option>
+                <option>CMA - CMA CGM</option>
+                <option>MSC</option>
+                <option>HAPAG - Hapag-Lloyd</option>
+              </select>
+            </div>
+            <div>
+              <div class="edi-field-lbl">VIAGEM / NAVIO</div>
+              <input class="edi-input" placeholder="LI321 / VESSEL NAME" value="LI321">
+            </div>
+            <button class="btn-edi-action" onclick="parseEdi()">🔍 Processar EDI</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Log de processamento -->
+      <div id="edi-log-wrap" style="display:none">
+        <div class="edi-field-lbl">LOG DE PROCESSAMENTO</div>
+        <div class="edi-log" id="edi-log"></div>
+      </div>
+
+      <!-- Resultado do parsing -->
+      <div class="edi-result" id="edi-result">
+        <div class="edi-result-title">
+          ✅ <span>3 contêineres encontrados no EDI — revise antes de aplicar</span>
+        </div>
+        <div class="edi-result-row">
+          <span class="edi-result-id">TCKU3456781</span>
+          <span class="edi-result-type">45HC</span>
+          <span style="color:var(--text2);flex:1">38.000 kg · Cheio · BDA</span>
+          <span style="color:var(--text3);font-size:11px">POL: Seattle → POD: Yokohama</span>
+          <span class="edi-result-flag f-codeco">CODECO</span>
+          <span class="chip chip-ok" style="font-size:10px">✓ OK</span>
+        </div>
+        <div class="edi-result-row">
+          <span class="edi-result-id">MSCU1234560</span>
+          <span class="edi-result-type">22G1</span>
+          <span style="color:var(--text2);flex:1">12.400 kg · Cheio · MSC</span>
+          <span style="color:var(--text3);font-size:11px">POL: Santos → POD: Hamburgo</span>
+          <span class="edi-result-flag f-codeco">CODECO</span>
+          <span class="chip chip-warn" style="font-size:10px">⚠ Sem pré-aviso</span>
+        </div>
+        <div class="edi-result-row">
+          <span class="edi-result-id">HLCU9876540</span>
+          <span class="edi-result-type">22R1</span>
+          <span style="color:var(--text2);flex:1">8.200 kg · Reefer -18°C · HAPAG</span>
+          <span style="color:var(--text3);font-size:11px">POL: Rotterdam → POD: Santos</span>
+          <span class="edi-result-flag f-coprar">COPRAR</span>
+          <span class="chip chip-ok" style="font-size:10px">✓ OK</span>
+        </div>
+        <div class="edi-apply-bar">
+          <button class="btn-edi-cancel" onclick="closePanel(&#39;edi&#39;)">Cancelar</button>
+          <button class="btn-edi-apply" onclick="applyEdi()">✓ Aplicar ao ticket GT-2026-01161</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       PAINEL CADASTRO MANUAL — NEW
+  ════════════════════════════════════════ -->
+  <div class="manual-panel" id="manual-panel">
+    <div class="manual-panel-head">
+      <span style="font-size:18px">✏️</span>
+      <div>
+        <div class="manual-panel-title">Cadastro Manual de Contêiner</div>
+        <div class="manual-panel-sub">Preencha os dados do contêiner para adicionar ao ticket</div>
+      </div>
+      <span class="manual-close" onclick="closePanel(&#39;manual&#39;)">✕</span>
+    </div>
+    <div class="manual-body">
+
+      <!-- Dados do contêiner -->
+      <div>
+        <div class="form-section-title">Dados do Contêiner</div>
+        <div id="cntr-list" class="cntr-list" style="margin-top:10px">
+          <!-- row 1 -->
+          <div class="cntr-row-form">
+            <div class="form-field">
+              <div class="form-lbl">Nº Contêiner <span>*</span></div>
+              <input class="form-input" placeholder="XXXX0000000" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()">
+            </div>
+            <div class="form-field">
+              <div class="form-lbl">Tipo ISO <span>*</span></div>
+              <select class="form-select">
+                <option>22G1</option><option>42G1</option><option>45G1</option>
+                <option>22R1</option><option>42R1</option><option>22T6</option>
+                <option>22P1</option><option>22U6</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <div class="form-lbl">Peso Bruto (kg)</div>
+              <input class="form-input" placeholder="00000" type="number">
+            </div>
+            <div class="form-field">
+              <div class="form-lbl">Status</div>
+              <select class="form-select">
+                <option>Cheio</option><option>Vazio</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <div class="form-lbl">Nº Lacre</div>
+              <input class="form-input" placeholder="LAC0000000">
+            </div>
+            <div class="form-field">
+              <div class="form-lbl">Tipo Carga</div>
+              <select class="form-select">
+                <option>Dry</option><option>Reefer</option><option>DG</option>
+                <option>OOG</option><option>OT</option><option>FR</option>
+              </select>
+            </div>
+            <button class="btn-remove" title="Remover">✕</button>
+          </div>
+        <div class="cntr-row-form">
+    <div class="form-field"><div class="form-lbl">Nº Contêiner <span style="color:var(--red)">*</span></div><input class="form-input" placeholder="XXXX0000000" oninput="this.value=this.value.toUpperCase()"></div>
+    <div class="form-field"><div class="form-lbl">Tipo ISO</div><select class="form-select"><option>22G1</option><option>42G1</option><option>45G1</option><option>22R1</option></select></div>
+    <div class="form-field"><div class="form-lbl">Peso (kg)</div><input class="form-input" placeholder="00000" type="number"></div>
+    <div class="form-field"><div class="form-lbl">Status</div><select class="form-select"><option>Cheio</option><option>Vazio</option></select></div>
+    <div class="form-field"><div class="form-lbl">Lacre</div><input class="form-input" placeholder="LAC0000000"></div>
+    <div class="form-field"><div class="form-lbl">Tipo Carga</div><select class="form-select"><option>Dry</option><option>Reefer</option><option>DG</option></select></div>
+    <button class="btn-remove" onclick="this.parentElement.remove()">✕</button>
+  </div></div>
+        <button class="btn-add-cntr" onclick="addCntrRow()" style="margin-top:8px">
+          + Adicionar contêiner
+        </button>
+      </div>
+
+      <!-- Dados de DG se aplicável -->
+      <div id="dg-section" style="display:none">
+        <div class="form-section-title">Mercadoria Perigosa (IMDG)</div>
+        <div class="form-grid-4" style="margin-top:10px">
+          <div class="form-field">
+            <div class="form-lbl">Classe IMO <span>*</span></div>
+            <select class="form-select">
+              <option>Classe 1 - Explosivos</option>
+              <option selected="">Classe 3 - Líquido Inflamável</option>
+              <option>Classe 4 - Sólidos Inflamáveis</option>
+              <option>Classe 5 - Oxidantes</option>
+              <option>Classe 6 - Tóxicos</option>
+              <option>Classe 8 - Corrosivos</option>
+              <option>Classe 9 - Diversos</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <div class="form-lbl">Número ONU (UN) <span>*</span></div>
+            <input class="form-input" placeholder="1267" value="1267">
+          </div>
+          <div class="form-field">
+            <div class="form-lbl">Grupo de Embalagem</div>
+            <select class="form-select">
+              <option>I</option><option selected="">II</option><option>III</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <div class="form-lbl">Nº Emergency Card</div>
+            <input class="form-input" placeholder="CHEM24-...">
+          </div>
+        </div>
+      </div>
+
+      <!-- Dados de Reefer se aplicável -->
+      <div id="reefer-section" style="display:none">
+        <div class="form-section-title">Temperatura (Reefer)</div>
+        <div class="form-grid-4" style="margin-top:10px">
+          <div class="form-field">
+            <div class="form-lbl">Set Point (°C) <span>*</span></div>
+            <input class="form-input" placeholder="-18" type="number">
+          </div>
+          <div class="form-field">
+            <div class="form-lbl">Ventilação (CBM/H)</div>
+            <input class="form-input" placeholder="0" type="number">
+          </div>
+          <div class="form-field">
+            <div class="form-lbl">Umidade (%)</div>
+            <input class="form-input" placeholder="85" type="number">
+          </div>
+          <div class="form-field">
+            <div class="form-lbl">Código Produto</div>
+            <input class="form-input" placeholder="Código da mercadoria">
+          </div>
+        </div>
+      </div>
+
+      <!-- Opções especiais -->
+      <div>
+        <div class="form-section-title" style="margin-bottom:8px">Características Especiais</div>
+        <div class="special-toggles">
+          <label class="stoggle dg-t" onclick="toggleSection(&#39;dg&#39;)">
+            <input type="checkbox" id="chk-dg"> ⚠ Mercadoria Perigosa (DG)
+          </label>
+          <label class="stoggle reefer-t" onclick="toggleSection(&#39;reefer&#39;)">
+            <input type="checkbox" id="chk-reefer"> ❄ Reefer
+          </label>
+          <label class="stoggle">
+            <input type="checkbox"> 📐 OOG (Out of Gauge)
+          </label>
+          <label class="stoggle">
+            <input type="checkbox"> ⚖ Sobrepe so
+          </label>
+          <label class="stoggle">
+            <input type="checkbox"> 🔒 Carga de alto valor
+          </label>
+        </div>
+      </div>
+
+      <!-- Rota / Booking -->
+      <div>
+        <div class="form-section-title">Rota e Booking</div>
+        <div class="form-grid-4" style="margin-top:10px">
+          <div class="form-field">
+            <div class="form-lbl">Booking</div>
+            <input class="form-input" placeholder="XXXXXXXX">
+          </div>
+          <div class="form-field">
+            <div class="form-lbl">Armador</div>
+            <select class="form-select">
+              <option>Select...</option>
+              <option>BDA</option><option>MSK - Maersk</option>
+              <option>CMA - CMA CGM</option><option>MSC</option>
+              <option>HAPAG - Hapag-Lloyd</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <div class="form-lbl">POL (Porto Embarque)</div>
+            <input class="form-input" placeholder="BRSSZ / Santos">
+          </div>
+          <div class="form-field">
+            <div class="form-lbl">POD (Porto Descarga)</div>
+            <input class="form-input" placeholder="DEHAM / Hamburgo">
+          </div>
+        </div>
+        <div class="form-grid-3" style="margin-top:10px">
+          <div class="form-field">
+            <div class="form-lbl">Navio / Viagem</div>
+            <input class="form-input" placeholder="LI321" value="LI321">
+          </div>
+          <div class="form-field">
+            <div class="form-lbl">Categoria</div>
+            <select class="form-select">
+              <option>IMPORT</option><option>EXPORT</option>
+              <option>TRANSSHIPMENT</option><option>EMPTY</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <div class="form-lbl">Motivo do cadastro manual</div>
+            <input class="form-input" placeholder="EDI não disponível / divergência / outro">
+          </div>
+        </div>
+      </div>
+
+      <div class="manual-footer">
+        <button class="btn-cancel-manual" onclick="closePanel(&#39;manual&#39;)">Cancelar</button>
+        <button class="btn-save-manual" onclick="saveManual()">✓ Adicionar ao ticket</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       DETALHES DO GATE — fiel ao original
+  ════════════════════════════════════════ -->
+  <div class="section-title">Detalhes do Gate</div>
+
+  <!-- Ticket card (full width) -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="ticket-card-head">Ticket GT-2026-01161</div>
+    <div class="card-body">
+      <div class="kv-grid-3">
+        <div class="kv">
+          <div class="kv-l">Sentido</div>
+          <div class="kv-v"><span class="arrow-in">→ GATE IN</span></div>
+        </div>
+        <div class="kv">
+          <div class="kv-l">📅 Data e Hora</div>
+          <div class="kv-v">01/06/2026 11:46</div>
+        </div>
+        <div class="kv">
+          <div class="kv-l">Tipo</div>
+          <div class="kv-v">👥 RECEPCAO</div>
+        </div>
+        <div class="kv">
+          <div class="kv-l">Transportadora</div>
+          <div class="kv-v teal">🏢 —</div>
+        </div>
+        <div class="kv">
+          <div class="kv-l">Status</div>
+          <div class="kv-v"><span class="chip chip-ok">✓ Processado</span></div>
+        </div>
+        <div class="kv">
+          <div class="kv-l">Origem dos dados</div>
+          <div class="kv-v"><span class="chip chip-edi">⚡ EDI CODECO</span> <span class="chip chip-manual" style="margin-left:4px">✏ Manual</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Veículo + Motorista -->
+  <div class="card-grid-2">
+    <div class="card">
+      <div class="card-head">Veículo</div>
+      <div class="card-body">
+        <div class="kv-grid-3">
+          <div class="kv">
+            <div class="kv-l">🚛 Placa do Cavalo</div>
+            <div class="kv-v">RAS1234</div>
+          </div>
+          <div class="kv">
+            <div class="kv-l">🚛 Placa Semirreboque</div>
+            <div class="kv-v teal">—</div>
+          </div>
+          <div class="kv">
+            <div class="kv-l">🚛 Placa Semirreboque 2</div>
+            <div class="kv-v teal">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head">Motorista</div>
+      <div class="card-body">
+        <div class="kv-grid-2">
+          <div class="kv">
+            <div class="kv-l">👤 Nome Completo</div>
+            <div class="kv-v">GUILHERME CONCEIÇÃO</div>
+          </div>
+          <div class="kv">
+            <div class="kv-l">🪪 Documento</div>
+            <div class="kv-v">33369381800</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contêineres + Notas Fiscais -->
+  <div class="card-grid-2">
+
+    <!-- Contêineres -->
+    <div class="card">
+      <div class="card-head" style="display:flex;align-items:center;justify-content:space-between">
+        <span>Contêineres</span>
+        <span style="font-size:11px;color:var(--text3)">3 registros</span>
+      </div>
+      <div class="card-body" style="padding:0">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Container <span class="sort">⇅</span></th>
+                <th>Tipo <span class="sort">⇅</span></th>
+                <th>Peso Bruto <span class="sort">⇅</span></th>
+                <th>Lacres</th>
+                <th>Status <span class="sort">⇅</span></th>
+                <th>Origem</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="cntr-table-body">
+              <tr>
+                <td style="font-weight:500">TCKU3456781</td>
+                <td>45</td>
+                <td>38.000 KG</td>
+                <td><button class="btn-view" title="Ver lacre">👁</button></td>
+                <td><span class="chip chip-cheio">📦 Cheio</span></td>
+                <td><span class="origin-badge ob-preadvise">Pré-aviso</span></td>
+                <td><button class="btn-view">👁</button></td>
+              </tr>
+            <tr>
+    <td style="font-weight:500">XXXX0000001</td>
+    <td>22G1</td>
+    <td>— KG</td>
+    <td><button class="btn-view">👁</button></td>
+    <td><span class="chip chip-cheio">📦 Cheio</span></td>
+    <td><span class="origin-badge ob-manual">✏ Manual</span></td>
+    <td><button class="btn-view">👁</button></td>
+  </tr></tbody>
+          </table>
+        </div>
+        <div class="pagination" style="padding:8px 14px">
+          Itens por página:
+          <select class="pg-select"><option>5</option></select>
+          1 de 1
+          <button class="pg-btn" disabled="">«</button>
+          <button class="pg-btn" disabled="">‹</button>
+          <button class="pg-btn" disabled="">›</button>
+          <button class="pg-btn" disabled="">»</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notas Fiscais -->
+    <div class="card">
+      <div class="card-head" style="display:flex;align-items:center;justify-content:space-between">
+        <span>Notas Fiscais</span>
+        <span style="font-size:11px;color:var(--text3)">1 registro</span>
+      </div>
+      <div class="card-body" style="padding:0">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>NF <span class="sort">⇅</span></th>
+                <th>Produtos <span class="sort">⇅</span></th>
+                <th>Peso Total <span class="sort">⇅</span></th>
+                <th>DANFE <span class="sort">⇅</span></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-weight:500">1</td>
+                <td><button class="btn-view">👁</button></td>
+                <td>800 kg</td>
+                <td style="font-size:10px;color:var(--text3);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">35250112345678000195550010000000011000000010</td>
+                <td><button class="btn-view">👁</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination" style="padding:8px 14px">
+          Itens por página:
+          <select class="pg-select"><option>5</option></select>
+          1 de 1
+          <button class="pg-btn" disabled="">«</button>
+          <button class="pg-btn" disabled="">‹</button>
+          <button class="pg-btn" disabled="">›</button>
+          <button class="pg-btn" disabled="">»</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Smart Decking -->
+  <div class="smart-head">Smart Decking</div>
+  <div class="smart-body">Nenhum registro encontrado.
+    <div class="pagination" style="justify-content:flex-end;padding-top:10px">
+      Itens por página:
+      <select class="pg-select"><option>5</option></select>
+      1 de 0
+      <button class="pg-btn" disabled="">«</button>
+      <button class="pg-btn" disabled="">‹</button>
+      <button class="pg-btn" disabled="">›</button>
+      <button class="pg-btn" disabled="">»</button>
+    </div>
+  </div>
+
+</div><!-- end page -->
+
+<!-- TOAST -->
+<div class="toast" id="toast">✓ Contêiner adicionado manualmente ao ticket GT-2026-01161</div>
+
+<script>
+let ediOpen = false, manualOpen = false;
+
+function togglePanel(type) {
+  if (type === 'edi') {
+    ediOpen = !ediOpen;
+    if (ediOpen) { manualOpen = false; document.getElementById('manual-panel').classList.remove('open'); }
+    document.getElementById('edi-panel').classList.toggle('open', ediOpen);
+    document.getElementById('btn-edi-mode').classList.toggle('active', ediOpen);
+    document.getElementById('btn-manual-mode').classList.remove('active');
+  } else {
+    manualOpen = !manualOpen;
+    if (manualOpen) { ediOpen = false; document.getElementById('edi-panel').classList.remove('open'); }
+    document.getElementById('manual-panel').classList.toggle('open', manualOpen);
+    document.getElementById('btn-manual-mode').classList.toggle('active', manualOpen);
+    document.getElementById('btn-edi-mode').classList.remove('active');
+  }
+}
+
+function closePanel(type) {
+  if (type === 'edi') { ediOpen = false; document.getElementById('edi-panel').classList.remove('open'); document.getElementById('btn-edi-mode').classList.remove('active'); }
+  else { manualOpen = false; document.getElementById('manual-panel').classList.remove('open'); document.getElementById('btn-manual-mode').classList.remove('active'); }
+}
+
+function setEdiTab(btn, type) {
+  document.querySelectorAll('.edi-tab').forEach(t => t.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+function selSource(card) {
+  document.querySelectorAll('.edi-source-card').forEach(c => c.classList.remove('sel'));
+  card.classList.add('sel');
+}
+
+function parseEdi() {
+  const logWrap = document.getElementById('edi-log-wrap');
+  const log = document.getElementById('edi-log');
+  logWrap.style.display = 'block';
+  log.innerHTML = '';
+  const steps = [
+    {cls:'info', msg:'[14:23:01] Iniciando processamento do EDI...'},
+    {cls:'info', msg:'[14:23:01] Tipo detectado: CODECO (Confirmação de recebimento/entrega)'},
+    {cls:'info', msg:'[14:23:01] Parceiro: BDA / Viagem: LI321'},
+    {cls:'info', msg:'[14:23:02] Encontrados 3 segmentos EQD (contêineres)'},
+    {cls:'info', msg:'[14:23:02] TCKU3456781 — 45HC — 38000KG ✓'},
+    {cls:'warn', msg:'[14:23:02] MSCU1234560 — 22G1 — sem pré-aviso vinculado'},
+    {cls:'info', msg:'[14:23:02] HLCU9876540 — 22R1 — Reefer -18°C — COPRAR vinculado ✓'},
+    {cls:'info', msg:'[14:23:03] Validação concluída. 3/3 contêineres processados.'},
+  ];
+  let i = 0;
+  const interval = setInterval(() => {
+    if (i >= steps.length) { clearInterval(interval); document.getElementById('edi-result').classList.add('show'); return; }
+    const d = document.createElement('div');
+    d.className = 'edi-log-line ' + steps[i].cls;
+    d.textContent = steps[i].msg;
+    log.appendChild(d);
+    log.scrollTop = log.scrollHeight;
+    i++;
+  }, 220);
+}
+
+function applyEdi() {
+  const tbody = document.getElementById('cntr-table-body');
+  const newRows = [
+    {id:'MSCU1234560', tipo:'22G1', peso:'12.400 KG', status:'chip-cheio', statusLbl:'📦 Cheio', origem:'ob-edi', origemLbl:'EDI CODECO'},
+    {id:'HLCU9876540', tipo:'22R1', peso:'8.200 KG',  status:'chip-ok',   statusLbl:'❄ Reefer', origem:'ob-edi', origemLbl:'EDI COPRAR'},
+  ];
+  newRows.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="font-weight:500">${r.id}</td>
+      <td>${r.tipo}</td>
+      <td>${r.peso}</td>
+      <td><button class="btn-view">👁</button></td>
+      <td><span class="chip ${r.status}">${r.statusLbl}</span></td>
+      <td><span class="origin-badge ${r.origem}">${r.origemLbl}</span></td>
+      <td><button class="btn-view">👁</button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+  closePanel('edi');
+  showToast('✓ 3 contêineres adicionados via EDI ao ticket GT-2026-01161', 'success');
+}
+
+function saveManual() {
+  const tbody = document.getElementById('cntr-table-body');
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td style="font-weight:500">XXXX0000001</td>
+    <td>22G1</td>
+    <td>— KG</td>
+    <td><button class="btn-view">👁</button></td>
+    <td><span class="chip chip-cheio">📦 Cheio</span></td>
+    <td><span class="origin-badge ob-manual">✏ Manual</span></td>
+    <td><button class="btn-view">👁</button></td>
+  `;
+  tbody.appendChild(tr);
+  closePanel('manual');
+  showToast('✓ Contêiner adicionado manualmente ao ticket GT-2026-01161', 'success');
+}
+
+function addCntrRow() {
+  const list = document.getElementById('cntr-list');
+  const div = document.createElement('div');
+  div.className = 'cntr-row-form';
+  div.innerHTML = `
+    <div class="form-field"><div class="form-lbl">Nº Contêiner <span style="color:var(--red)">*</span></div><input class="form-input" placeholder="XXXX0000000" oninput="this.value=this.value.toUpperCase()"/></div>
+    <div class="form-field"><div class="form-lbl">Tipo ISO</div><select class="form-select"><option>22G1</option><option>42G1</option><option>45G1</option><option>22R1</option></select></div>
+    <div class="form-field"><div class="form-lbl">Peso (kg)</div><input class="form-input" placeholder="00000" type="number"/></div>
+    <div class="form-field"><div class="form-lbl">Status</div><select class="form-select"><option>Cheio</option><option>Vazio</option></select></div>
+    <div class="form-field"><div class="form-lbl">Lacre</div><input class="form-input" placeholder="LAC0000000"/></div>
+    <div class="form-field"><div class="form-lbl">Tipo Carga</div><select class="form-select"><option>Dry</option><option>Reefer</option><option>DG</option></select></div>
+    <button class="btn-remove" onclick="this.parentElement.remove()">✕</button>
+  `;
+  list.appendChild(div);
+}
+
+function toggleSection(type) {
+  const id = type === 'dg' ? 'dg-section' : 'reefer-section';
+  const el = document.getElementById(id);
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (type || '');
+  setTimeout(() => { t.className = 'toast'; }, 3500);
+}
+</script>
+
+
+</body></html>
